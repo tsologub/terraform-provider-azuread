@@ -994,7 +994,6 @@ func applicationResourceCreate(ctx context.Context, d *schema.ResourceData, meta
 
 	// Retrieve and set the initial owners, which can be up to 20 in total when creating the application
 	if v, ok := d.GetOk("owners"); ok {
-		ownerCount := 0
 		for _, ownerIdRaw := range v.(*schema.Set).List() {
 			ownerId := ownerIdRaw.(string)
 
@@ -1009,13 +1008,7 @@ func applicationResourceCreate(ctx context.Context, d *schema.ResourceData, meta
 					client.BaseClient.Endpoint, client.BaseClient.TenantId, ownerId))),
 				ID: &ownerId,
 			}
-
-			if ownerCount < 19 {
-				ownersFirst20 = append(ownersFirst20, ownerObject)
-			} else {
-				ownersExtra = append(ownersExtra, ownerObject)
-			}
-			ownerCount++
+			ownersExtra = append(ownersExtra, ownerObject)
 		}
 	}
 
